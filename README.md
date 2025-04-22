@@ -15,3 +15,7 @@ The first key is for [Wit.AI](wit.ai) and the second one is for [WeatherAPI.com]
 
 Use cases:
 ![Realtime example](/images/realtime_example.png)
+![Realtime example](/images/forecast_example.png)
+![Realtime example](/images/sun_example.png)
+![Realtime example](/images/moon_example.png)
+![Realtime example](/images/moon_phase_example.png)

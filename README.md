@@ -13,9 +13,14 @@ VITE_WEATHER_API_KEY=yourkey
 ```
 The first key is for [Wit.AI](wit.ai) and the second one is for [WeatherAPI.com](weatherapi.com).
 
-Use cases:
+## Use cases:
+Realtime:
 ![Realtime example](/images/realtime_example.png)
+Forecast:
 ![Realtime example](/images/forecast_example.png)
+Sun:
 ![Realtime example](/images/sun_example.png)
+Moon:
 ![Realtime example](/images/moon_example.png)
+Moon phase:
 ![Realtime example](/images/moon_phase_example.png)

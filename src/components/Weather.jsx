@@ -424,51 +424,24 @@ const Weather = () => {
       
       {error && <div className="error-message">{error}</div>}
       
-      <div className="weather-data-placeholder">
-  <h3 className="features-title">Supported Features</h3>
-  
-    <div className="features-grid">
-      <div className="feature-item">
-        <div className="feature-icon">🌡️</div>
-        <div className="feature-info">
-          <h4>Realtime</h4>
-          <p className="feature-example">"Weather in LA in Fahrenheit in imperial"</p>
-        </div>
+      <div className="weather-results">
+        {isLoading ? (
+          <div className="loading-indicator">Loading weather data...</div>
+        ) : weatherComponents.length > 0 ? (
+          <div className="weather-cards-container">
+            {weatherComponents}
+          </div>
+        ) : (
+          <div className="weather-data-placeholder">
+            <p>Supported features:</p>
+            <p>Realtime: "Weather in LA in Fahrenheit in imperial"</p>
+            <p>Forecast: "5 day Boston weather forecast in F in miles"</p>
+            <p>Sun: "Sunset in Chicago"</p>
+            <p>Moon: "Moonrise in NY"</p>
+            <p>Moon Phase: "Moon phase in Atlanta"</p>
+          </div>
+        )}
       </div>
-      
-      <div className="feature-item">
-        <div className="feature-icon">📅</div>
-        <div className="feature-info">
-          <h4>Forecast</h4>
-          <p className="feature-example">"5 day Boston weather forecast in F in miles"</p>
-        </div>
-      </div>
-      
-      <div className="feature-item">
-        <div className="feature-icon">🌇</div>
-        <div className="feature-info">
-          <h4>Sun</h4>
-          <p className="feature-example">"Sunset in Chicago"</p>
-        </div>
-      </div>
-      
-      <div className="feature-item">
-        <div className="feature-icon">🌕</div>
-        <div className="feature-info">
-          <h4>Moon</h4>
-          <p className="feature-example">"Moonrise in NY"</p>
-        </div>
-      </div>
-      
-      <div className="feature-item">
-        <div className="feature-icon">🌓</div>
-        <div className="feature-info">
-          <h4>Moon Phase</h4>
-          <p className="feature-example">"Moon phase in Atlanta"</p>
-        </div>
-      </div>
-    </div>
-  </div>
     </div>
   );
 };

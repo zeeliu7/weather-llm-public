@@ -15,6 +15,8 @@ VITE_WEATHER_API_KEY=yourkey
 ```
 The first key is for [Wit.AI](wit.ai) and the second one is for [WeatherAPI.com](weatherapi.com).
 
+---
+
 ### Use cases:
 Realtime:
 ![Realtime example](/images/realtime_example.png)

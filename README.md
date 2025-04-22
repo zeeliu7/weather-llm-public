@@ -6,6 +6,8 @@ Supporting: realtime weather, 14-day weather prediction, sunrise/sunset, moonris
 
 ### Try it now: https://weather-llm-gray.vercel.app/
 
+---
+
 **This is a public repo, so no `.env` file is provided. Configure your .env like below:**
 ```
 VITE_WITAI_CLIENT_ACCESS_TOKEN=yourkey

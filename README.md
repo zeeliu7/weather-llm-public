@@ -8,7 +8,7 @@ Supporting: realtime weather, 14-day weather prediction, sunrise/sunset, moonris
 
 ---
 
-**This is a public repo, so no `.env` file is provided. Configure your `.env` like below:**
+**This is a public repo, so no `.env` file is provided. Configure your `.env` file like below:**
 ```
 VITE_WITAI_CLIENT_ACCESS_TOKEN=yourkey
 VITE_WEATHER_API_KEY=yourkey

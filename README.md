@@ -15,6 +15,8 @@ VITE_WEATHER_API_KEY=yourkey
 ```
 The first key is for [Wit.AI](wit.ai) and the second one is for [WeatherAPI.com](weatherapi.com).
 
+The given website is running on a private version of this repo with my own API keys.
+
 ---
 
 ### Use cases:

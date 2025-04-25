@@ -22,7 +22,7 @@ The given website is running on a private version of this repo with my own API k
 ### Use cases:
 Realtime:
 ![Realtime example](/images/realtime_example.png)
-Forecast:
+Forecast (7 days max):
 ![Realtime example](/images/forecast_example.png)
 Sun:
 ![Realtime example](/images/sun_example.png)

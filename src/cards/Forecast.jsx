@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Card.css';
 
+const DAY_IN_SECONDS = 86400;
+
 const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,8 +15,8 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
       setError(null);
       
       try {
-        // Calculate days for forecast (min 2, max 14)
-        const daysForForecast = Math.max(2, Math.min(14, Math.ceil(normalizedPeriod / (24 * 60 * 60))));
+        // Calculate days for forecast (min 2, max 7)
+        const daysForForecast = Math.max(2, Math.min(7, Math.ceil(normalizedPeriod / DAY_IN_SECONDS)));
         setDays(daysForForecast);
         
         // Replace with your actual API endpoint and key
@@ -115,7 +117,13 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
   
   // Format date from YYYY-MM-DD to more readable format
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
+    // Split the date string to get year, month, day
+    const [year, month, day] = dateString.split('-').map(num => parseInt(num, 10));
+    
+    // Create date object with explicit values (month is 0-indexed in JavaScript)
+    // Important: use local date construction to avoid timezone issues
+    const date = new Date(year, month - 1, day);
+    
     return date.toLocaleDateString('en-US', { 
       weekday: 'short', 
       month: 'short', 

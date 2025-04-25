@@ -435,7 +435,7 @@ const Weather = () => {
           <div className="weather-data-placeholder">
             <p>Supported features:</p>
             <p>Realtime: "Weather in LA in Fahrenheit in imperial"</p>
-            <p>Forecast: "5 day Boston weather forecast in F in miles"</p>
+            <p>Forecast (7 days max): "3 day Boston weather forecast in F in miles"</p>
             <p>Sun: "Sunset in Chicago"</p>
             <p>Moon: "Moonrise in NY"</p>
             <p>Moon Phase: "Moon phase in Atlanta"</p>
@@ -458,8 +458,6 @@ const Weather = () => {
         </a>
       </section>
     </div>
-
-    
   );
 };
 

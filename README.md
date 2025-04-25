@@ -2,7 +2,7 @@
 
 Get weather information with natural language!
 
-Supporting: realtime weather, 14-day weather prediction, sunrise/sunset, moonrise/moonset, moon phase
+Supporting: realtime weather, 7-day weather prediction, sunrise/sunset, moonrise/moonset, moon phase
 
 ### Try it now: https://weather-llm-gray.vercel.app/
 

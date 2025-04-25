@@ -78,77 +78,121 @@ const Realtime = ({ location, tempUnit, measurementSystem }) => {
 
   const { current, location: locationData } = data;
   
-  // Get temperature and other measurements based on user preference
-  const temp = tempUnit === 'Celsius' ? current.temp_c : current.temp_f;
-  const feelsLike = tempUnit === 'Celsius' ? current.feelslike_c : current.feelslike_f;
-  const windSpeed = measurementSystem === 'Metric' ? current.wind_kph : current.wind_mph;
+  // Helper function to safely access nested properties
+  const safeGet = (obj, path, defaultValue = 'N/A') => {
+    return path.split('.').reduce((prev, curr) => {
+      return prev && prev[curr] !== undefined ? prev[curr] : defaultValue;
+    }, obj);
+  };
+  
+  // Get temperature and other measurements based on user preference with safety checks
+  const temp = tempUnit === 'Celsius' 
+    ? safeGet(current, 'temp_c', 'N/A') 
+    : safeGet(current, 'temp_f', 'N/A');
+  
+  const feelsLike = tempUnit === 'Celsius' 
+    ? safeGet(current, 'feelslike_c', 'N/A') 
+    : safeGet(current, 'feelslike_f', 'N/A');
+  
+  const windSpeed = measurementSystem === 'Metric' 
+    ? safeGet(current, 'wind_kph', 'N/A') 
+    : safeGet(current, 'wind_mph', 'N/A');
+  
   const windSpeedUnit = measurementSystem === 'Metric' ? 'km/h' : 'mph';
-  const visibility = measurementSystem === 'Metric' ? current.vis_km : current.vis_miles;
+  
+  const visibility = measurementSystem === 'Metric' 
+    ? safeGet(current, 'vis_km', 'N/A') 
+    : safeGet(current, 'vis_miles', 'N/A');
+  
   const visibilityUnit = measurementSystem === 'Metric' ? 'km' : 'miles';
-  const precipitation = measurementSystem === 'Metric' ? current.precip_mm : current.precip_in;
+  
+  const precipitation = measurementSystem === 'Metric' 
+    ? safeGet(current, 'precip_mm', 'N/A') 
+    : safeGet(current, 'precip_in', 'N/A');
+  
   const precipitationUnit = measurementSystem === 'Metric' ? 'mm' : 'in';
-  const pressure = measurementSystem === 'Metric' ? current.pressure_mb : current.pressure_in;
+  
+  const pressure = measurementSystem === 'Metric' 
+    ? safeGet(current, 'pressure_mb', 'N/A') 
+    : safeGet(current, 'pressure_in', 'N/A');
+  
   const pressureUnit = measurementSystem === 'Metric' ? 'mb' : 'in';
-  const gust = measurementSystem === 'Metric' ? current.gust_kph : current.gust_mph;
+  
+  const gust = measurementSystem === 'Metric' 
+    ? safeGet(current, 'gust_kph', 'N/A') 
+    : safeGet(current, 'gust_mph', 'N/A');
+  
   const gustUnit = measurementSystem === 'Metric' ? 'km/h' : 'mph';
+
+  // Check if condition object exists before accessing its properties
+  const conditionIcon = safeGet(current, 'condition.icon', '');
+  const conditionText = safeGet(current, 'condition.text', 'Unknown');
+  
+  // Helper to render a detail item only if the value exists and is not 'N/A'
+  const renderDetailItem = (label, value, unit = '') => {
+    if (value !== 'N/A' && value !== undefined && value !== null) {
+      return (
+        <div className="detail-item">
+          <span className="detail-label">{label}:</span>
+          <span className="detail-value">{value} {unit}</span>
+        </div>
+      );
+    }
+    return null;
+  };
   
   return (
     <div className="card realtime-card">
       <div className="card-header">
-        <h2>Current Weather for {locationData.name}</h2>
-        <p className="location-details">{locationData.region}, {locationData.country}</p>
-        <p className="local-time">Local time: {locationData.localtime}</p>
-        <p className="last-updated">Last updated: {current.last_updated}</p>
+        <h2>Current Weather for {safeGet(locationData, 'name', location.name)}</h2>
+        {safeGet(locationData, 'region', false) && (
+          <p className="location-details">
+            {locationData.region}
+            {safeGet(locationData, 'country', false) && `, ${locationData.country}`}
+          </p>
+        )}
+        {safeGet(locationData, 'localtime', false) && (
+          <p className="local-time">Local time: {locationData.localtime}</p>
+        )}
+        {safeGet(current, 'last_updated', false) && (
+          <p className="last-updated">Last updated: {current.last_updated}</p>
+        )}
       </div>
       <div className="card-content">
+        <p className="api-notice">Due to API limits, some fields may not be available.</p>
         <div className="realtime-main">
           <div className="realtime-condition">
-            <img 
-              src={current.condition.icon.replace('//', 'https://')} 
-              alt={current.condition.text} 
-              className="condition-icon-large" 
-            />
+            {conditionIcon && (
+              <img 
+                src={conditionIcon.replace('//', 'https://')} 
+                alt={conditionText} 
+                className="condition-icon-large" 
+              />
+            )}
             <div className="condition-details">
-              <h3 className="condition-text">{current.condition.text}</h3>
-              <p className="temp-value">{temp}°{tempUnit === 'Celsius' ? 'C' : 'F'}</p>
-              <p className="feels-like">Feels like: {feelsLike}°{tempUnit === 'Celsius' ? 'C' : 'F'}</p>
+              <h3 className="condition-text">{conditionText}</h3>
+              {temp !== 'N/A' && (
+                <p className="temp-value">{temp}°{tempUnit === 'Celsius' ? 'C' : 'F'}</p>
+              )}
+              {feelsLike !== 'N/A' && (
+                <p className="feels-like">Feels like: {feelsLike}°{tempUnit === 'Celsius' ? 'C' : 'F'}</p>
+              )}
             </div>
           </div>
         </div>
 
         <div className="realtime-details-grid">
-          <div className="detail-item">
-            <span className="detail-label">Wind:</span>
-            <span className="detail-value">{windSpeed} {windSpeedUnit} {current.wind_dir}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Gust:</span>
-            <span className="detail-value">{gust} {gustUnit}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Humidity:</span>
-            <span className="detail-value">{current.humidity}%</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Cloud Cover:</span>
-            <span className="detail-value">{current.cloud}%</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Visibility:</span>
-            <span className="detail-value">{visibility} {visibilityUnit}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Precipitation:</span>
-            <span className="detail-value">{precipitation} {precipitationUnit}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Pressure:</span>
-            <span className="detail-value">{pressure} {pressureUnit}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">UV Index:</span>
-            <span className="detail-value">{current.uv}</span>
-          </div>
+          {renderDetailItem('Wind', 
+            windSpeed !== 'N/A' ? `${windSpeed} ${safeGet(current, 'wind_dir', '')}` : 'N/A', 
+            windSpeedUnit
+          )}
+          {renderDetailItem('Gust', gust, gustUnit)}
+          {renderDetailItem('Humidity', safeGet(current, 'humidity', 'N/A'), '%')}
+          {renderDetailItem('Cloud Cover', safeGet(current, 'cloud', 'N/A'), '%')}
+          {renderDetailItem('Visibility', visibility, visibilityUnit)}
+          {renderDetailItem('Precipitation', precipitation, precipitationUnit)}
+          {renderDetailItem('Pressure', pressure, pressureUnit)}
+          {renderDetailItem('UV Index', safeGet(current, 'uv', 'N/A'))}
         </div>
       </div>
     </div>

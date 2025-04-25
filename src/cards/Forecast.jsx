@@ -7,7 +7,8 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [days, setDays] = useState(0);
+  const [requestedDays, setRequestedDays] = useState(0);
+  const [actualDays, setActualDays] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,7 +18,7 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
       try {
         // Calculate days for forecast (min 2, max 7)
         const daysForForecast = Math.max(2, Math.min(7, Math.ceil(normalizedPeriod / DAY_IN_SECONDS)));
-        setDays(daysForForecast);
+        setRequestedDays(daysForForecast);
         
         // Replace with your actual API endpoint and key
         const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
@@ -30,6 +31,12 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
         }
         
         const apiData = await response.json();
+        
+        // Set the actual number of days we received from the API
+        if (apiData.forecast && apiData.forecast.forecastday) {
+          setActualDays(apiData.forecast.forecastday.length);
+        }
+        
         setData(apiData);
       } catch (err) {
         console.error('Error fetching forecast data:', err);
@@ -48,7 +55,7 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
     return (
       <div className="card forecast-card loading">
         <div className="card-header">
-          <h2>{days}-day Forecast for {location.name}</h2>
+          <h2>Forecast for {location.name}</h2>
         </div>
         <div className="card-content">
           <p>Loading forecast data...</p>
@@ -70,7 +77,7 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
     );
   }
 
-  if (!data || !data.forecast || !data.forecast.forecastday) {
+  if (!data || !data.forecast || !data.forecast.forecastday || data.forecast.forecastday.length === 0) {
     return (
       <div className="card forecast-card error">
         <div className="card-header">
@@ -131,14 +138,23 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
     });
   };
 
+  // Determine which message to display about the forecast days
+  const getForecastMessage = () => {
+    if (actualDays < requestedDays) {
+      return `${actualDays}-day Forecast for ${location.name} (${requestedDays} days requested)`;
+    }
+    return `${actualDays}-day Forecast for ${location.name}`;
+  };
+
   return (
     <div className="card forecast-card">
       <div className="card-header">
-        <h2>{days}-day Forecast for {location.name}</h2>
+        <h2>{getForecastMessage()}</h2>
         <p className="location-details">
           {data.location.region ? `${data.location.region}, ` : ''}{data.location.country}
         </p>
         <p className="local-time">Local time: {data.location.localtime}</p>
+        <p className="api-limit-notice">Due to API limits, the returned days may be fewer than requested.</p>
       </div>
       <div className="card-content">
         <div className="forecast-days">
@@ -170,6 +186,11 @@ const Forecast = ({ location, tempUnit, measurementSystem, normalizedPeriod }) =
             );
           })}
         </div>
+        {actualDays < requestedDays && (
+          <div className="api-limit-notice">
+            <p>Note: Only {actualDays} days of forecast data are available from the weather service.</p>
+          </div>
+        )}
       </div>
     </div>
   );
